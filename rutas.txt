@@ -1,0 +1,17 @@
+### POST add_student
+http://localhost:3333/alumnos
+{"name":"Juana","surname":"Garcia","status":"matriculado","birthdate":"02-02-2003","idioma_Materno":"ingles","DNI":18189410, "coursesIds":[1,7,13]}
+
+### GET get_alumnos
+http://localhost:3333/alumnos
+
+### GET get_alumno_id
+http://localhost:3333/alumnos/4
+
+### GET get_cursos
+http://localhost:3333/cursos
+
+
+TIP: resetear la base de datos antes de realizar cambios en el backend.
+PSDT: postgres esta en pc local.
+PSDT2: en /services/alumnos/alumnos.service.ts he dejado codigo comentado.
