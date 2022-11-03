@@ -1,25 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Course } from 'src/entities/courses.entity';
-import { Repository } from 'typeorm';
-import Cursos from '../../../json/cursos';
+import { Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Course } from 'src/entities/courses.entity'
+import { Repository } from 'typeorm'
+import Cursos from '../../../json/cursos'
 
 @Injectable()
 export class CursosService {
-    constructor(
-        @InjectRepository(Course)
-        private courseRepo: Repository<Course>,
-    ) {}
-    
+  constructor(
+    @InjectRepository(Course) private courseRepo: Repository<Course>,
+  ) {}
 
-// aca voy a cargar los cursos en formato json.
-    async loadCursos(){
-        const loadCursos=await Cursos.map(async (e)=>await this.courseRepo.save(e))
-        return loadCursos;
-    }
-    
+  async loadCourses() {
+    Cursos.map(async e => {
+      await this.courseRepo.save(e)
+    })
+  }
 
-    findCursos(){
-        return this.courseRepo.find();
-    }
+  async findCourses() {
+    return await this.courseRepo.find()
+  }
 }

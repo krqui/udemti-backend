@@ -1,6 +1,5 @@
-/* esLint-disable prettier/prettier */
 export enum StatusAlumno {
-    Matriculado = 'matriculado',
-    NoMatriculado='nomatriculado',
-    Retirado = 'retirado'
+  Enrolled = 'Enrolled',
+  NotEnrolled = 'Not enrolled',
+  Disenrolled = 'Disenrolled',
 }

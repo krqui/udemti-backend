@@ -1,73 +1,78 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Student } from '../../../entities/students.entity';
-import { Repository, In } from 'typeorm';
-import { CreateAlumnoParams } from 'src/utils/types';
-import { Course } from 'src/entities/courses.entity';
-import Alumnos from '../../../json/alumnos';
-// you don't want to call a database directly from the controller. 
-// That's what the service class is for okay.
-// Repository definition → https://desarrolloweb.com/articulos/repositorios-typeorm-nest#:~:text=Los%20repositorios%20son%20una%20de,de%20escritura%20en%20las%20tablas.
+import { Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Student } from '../../../entities/students.entity'
+import { Repository, In } from 'typeorm'
+import { CreateAlumnoParams } from 'src/utils/types'
+import { Course } from 'src/entities/courses.entity'
+import Alumnos from '../../../json/alumnos'
 
 @Injectable()
 export class AlumnosService {
-    constructor(
-        @InjectRepository(Student) 
-        private studentRepository: Repository<Student>,
-        @InjectRepository(Course)
-        private courseRepository: Repository<Course>,
-    ) {}
+  constructor(
+    @InjectRepository(Student) private studentRepository: Repository<Student>,
+    @InjectRepository(Course) private courseRepository: Repository<Course>,
+  ) {}
 
-    // aca voy a cargar a los alumnos en formato json.
-    async loadAlumnos(){
-        const loadAlumnos=await Alumnos.map(async (e)=>
+  async loadStudents() {
+    Alumnos.map(async e => {
+      const oldStudent = await this.studentRepository.create({
+        ...e,
+        createdAt: new Date(),
+      })
 
-        {const nuevoAlumno= await this.studentRepository.create({
-            ...e,
-            createdAt:new Date(),
-        });
-        // console.log(e);
+      oldStudent.courses = await this.courseRepository.findBy({
+        id: In(e.coursesIds),
+      })
 
-        // Lo que comente en el pull request. ↓↓
-        /*const cursosIds= await e.coursesIds;
-         console.log(cursosIds);
+      await this.studentRepository.save(oldStudent)
+    })
+  }
 
-        const cursos = await this.courseRepository.findBy({id:In(cursosIds)});
-        console.log(cursos);
-        nuevoAlumno.courses= cursos;*/
-        // ↑ TODOS los alumnos precargados DEBERIAN vincularse a la tabla de cursos correctamente.
-        // Mi teoria tras dar console.logs es que los logs de Nest se ejecutan antes de que todo este ".service" se ejecute. Creo que debo convertirlo en asincronico.
-        return await this.studentRepository.save(nuevoAlumno)}
-        )
-        return loadAlumnos;
-    }
+  async findAlumnos() {
+    return await this.studentRepository.find({
+      relations: ['courses'],
+    })
+  }
 
+  async getByName({ students, name }) {
+    return students.filter(students =>
+      students.name.toLowerCase().includes(name.toLowerCase()),
+    )
+  }
 
-    findAlumnos(){
-        return this.studentRepository.find({
-            relations:['courses']
-        });
-    }
-    
-    async findOneAlumno(id:number){
-        
-        return await this.studentRepository.find({
-            where:{id:id},
-            //select:{surname:true}, 
-            relations: ['courses']
-        })
-    }
+  // Lo que aqui consegui programar es que aquellos alumnos (element) que posean un determinado curso, sean pusheados a un array titulado arru.
+  // En caso de que el "element" NO posea el curso buscado, entonces se le asigna el valor de un array vacio. Mientras que de encontrarse el valor, entonces el alumno (element) si posee el curso solicitado.
+  async getByCourse({ students, course }) {
+    let arr = []
+    await students.map(element => {
+      let propertyFounded = element.courses.filter(e =>
+        e.title.includes(course),
+      )
 
-    async createAlumno(alumnoDetails:CreateAlumnoParams){
-        const newAlumno=  this.studentRepository.create({
-            ...alumnoDetails,
-            createdAt:new Date(),
-        });
-        const coursesIds = alumnoDetails.coursesIds;
-        const courses = await this.courseRepository.findBy({ id: In(coursesIds) })
-        console.log(courses);
-        newAlumno.courses=courses;
+      if (propertyFounded.length > 0) {
+        arr.push(element)
+      }
+    })
+    return arr
+  }
 
-        return this.studentRepository.save(newAlumno);
-    }
+  async findOneAlumno(id: number) {
+    return await this.studentRepository.find({
+      where: { id: id },
+      relations: ['courses'],
+    })
+  }
+
+  async createAlumno(studentDetails: CreateAlumnoParams) {
+    const newStudent = this.studentRepository.create({
+      ...studentDetails,
+      createdAt: new Date(),
+    })
+
+    newStudent.courses = await this.courseRepository.findBy({
+      id: In(studentDetails.coursesIds),
+    })
+
+    await this.studentRepository.save(newStudent)
+  }
 }

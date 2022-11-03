@@ -1,10 +1,8 @@
-export class CreateAlumnoDto {
-    name:string;
-    surname:string;
-    //status:string|null;
-    birthdate:string;
-    idioma_Materno:string;
-    DNI:number;
-    coursesIds: number[]
-
+export class CreateStudentDto {
+  name: string
+  surname: string
+  birthdate: string
+  nationality: string
+  DNI: number
+  coursesIds: number[]
 }
