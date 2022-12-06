@@ -6,3 +6,7 @@ export type CreateAlumnoParams = {
   DNI: number
   coursesIds: number[]
 }
+
+export type CreateCourseParams = {
+  title: string
+}

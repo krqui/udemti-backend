@@ -11,7 +11,7 @@ const studentsJson = [
   {
     name: 'Pepe',
     surname: 'Sushiko',
-    status: 'Not enrolled',
+    status: 'NotEnrolled',
     birthdate: '05-05-2004',
     nationality: 'Japanese',
     DNI: 46105197,
@@ -56,7 +56,7 @@ const studentsJson = [
   {
     name: 'Lucas',
     surname: 'Hansen',
-    status: 'Not enrolled',
+    status: 'NotEnrolled',
     birthdate: '09-23-1998',
     nationality: 'Norwegian',
     DNI: 48216791,
@@ -92,7 +92,7 @@ const studentsJson = [
   {
     name: 'Jayden',
     surname: 'Brown',
-    status: 'Not enrolled',
+    status: 'NotEnrolled',
     birthdate: '12-21-2002',
     nationality: 'Jamaican',
     DNI: 48312570,

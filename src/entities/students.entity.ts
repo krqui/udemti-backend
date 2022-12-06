@@ -24,19 +24,23 @@ export class Student {
   @Column({ type: 'date' })
   birthdate: string
 
-  @Column({ default: new Date() })
-  createdAt: Date
-
   @Column({ nullable: true })
   nationality: string
 
   @Column({ unique: true })
   DNI: number
 
-  // como segundo argumento: un curso va a tener distintos estudiantes.
+  @Column({ default: new Date() })
+  createdAt: Date
+
+  @Column({ default: new Date() })
+  updatedAt: Date
+
   @ManyToMany(() => Course, course => course.students)
   courses: Course[]
 }
+// ManyToMany: como segundo argumento: un curso va a tener distintos estudiantes.
+
 // relacion bidimensional: si yo estoy dentro de los alumnos puedo obtener todos los cursos y
 // si estoy dentro del curso puede obtener a todos los alumnos, por eso aqui tambien importo many to many
 
