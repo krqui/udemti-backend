@@ -34,28 +34,6 @@ export class AlumnosService {
     })
   }
 
-  async getByName({ students, name }) {
-    return students.filter(students =>
-      students.name.toLowerCase().includes(name.toLowerCase()),
-    )
-  }
-
-  // Lo que aqui consegui programar es que aquellos alumnos (element) que posean un determinado curso, sean pusheados a un array titulado arru.
-  // En caso de que el "element" NO posea el curso buscado, entonces se le asigna el valor de un array vacio. Mientras que de encontrarse el valor, entonces el alumno (element) si posee el curso solicitado.
-  async getByCourse({ students, course }) {
-    let arr = []
-    await students.map(element => {
-      let propertyFounded = element.courses.filter(e =>
-        e.title.includes(course),
-      )
-
-      if (propertyFounded.length > 0) {
-        arr.push(element)
-      }
-    })
-    return arr
-  }
-
   async findOneAlumno(id: number) {
     return await this.studentRepository.find({
       where: { id: id },
@@ -72,7 +50,30 @@ export class AlumnosService {
     newStudent.courses = await this.courseRepository.findBy({
       id: In(studentDetails.coursesIds),
     })
+    console.log('POST alumno: ', newStudent)
 
     await this.studentRepository.save(newStudent)
+  }
+
+  async updateStudent(id: number, studentUpdates: CreateAlumnoParams) {
+    const updatedStudent = this.studentRepository.create({
+      ...studentUpdates,
+      id: id,
+      updatedAt: new Date(),
+    })
+    updatedStudent.courses = await this.courseRepository.findBy({
+      id: In(studentUpdates.coursesIds),
+    })
+
+    const updated = [updatedStudent]
+    const student = await this.findOneAlumno(id)
+
+    const studentNow = Object.assign(student, updated)
+    await this.studentRepository.save(studentNow)
+  }
+
+  async deleteStudent(id: number) {
+    const exstudent = await this.findOneAlumno(id)
+    await this.studentRepository.remove(exstudent)
   }
 }

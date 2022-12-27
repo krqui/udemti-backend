@@ -1,5 +1,5 @@
 export enum StatusAlumno {
   Enrolled = 'Enrolled',
-  NotEnrolled = 'Not enrolled',
+  NotEnrolled = 'NotEnrolled',
   Disenrolled = 'Disenrolled',
 }
