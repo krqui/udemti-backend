@@ -1,0 +1,3 @@
+TIP: resetear la base de datos antes de realizar cambios en el backend.
+PSDT: postgres esta en pc local.
+PSDT2: en /services/alumnos/alumnos.service.ts he dejado codigo comentado.
